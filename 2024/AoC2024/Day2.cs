@@ -20,35 +20,29 @@ public static class Day2
             iteration +=1;
             var incremental = report.Zip(report.Skip(1), (x,y) => y-x);
             var length = incremental.Count();
-            var countIncreasing = incremental.Count(i => (i >=1 && i <=3));
-            var countDecreasing = incremental.Count(i => (i <= -1 && i >= -3));
+            var countIncreasing = incremental.Count(i => i >=1 && i <=3);
+            var countDecreasing = incremental.Count(i => i <= -1 && i >= -3);
             if (countIncreasing == length || countDecreasing == length)
             {
                 partAcount +=1;
                 Console.WriteLine($"{iteration} is good");
             }
-            else if (countIncreasing == length - 1)
+            else
             {
-                var index = incremental.Select((value, idx) => new { value, idx })
-                                       .FirstOrDefault(pair => !(pair.value >= 1 && pair.value <= 3))?.idx ?? -1;
-                var cumulated = incremental.ElementAt(index) + incremental.ElementAtOrDefault(index+1);
-                if (index == 0 || index == length-1 || (cumulated >=1 && cumulated <=3))
+                // Check by skipping one element
+                for (int i = 0; i < report.Count; i++)
                 {
-                    partBcount +=1;
-                    Console.WriteLine($"{iteration} is ^1skip");
-                }
-            }
-            else if (countDecreasing == length - 1)
-            {
-                var index = incremental.Select((value, idx) => new { value, idx })
-                                       .FirstOrDefault(pair => !(pair.value <= -1 && pair.value >= -3))?.idx ?? -1;
-                var cumulated = incremental.ElementAt(index) + incremental.ElementAtOrDefault(index+1);
-                if (index == 0 || index == length-1 || (cumulated <=-1 && cumulated >= -3))
-                {
-                    partBcount +=1;
-                    Console.WriteLine($"{iteration} is dwn1skip");
+                    var skippedReport = report.Where((_, index) => index != i).ToList();
+                    var skippedIncremental = skippedReport.Zip(skippedReport.Skip(1), (x, y) => y - x).ToList();
+                    var skippedLength = skippedIncremental.Count;
+                    var skippedCountIncreasing = skippedIncremental.Count(j => j >= 1 && j <= 3);
+                    var skippedCountDecreasing = skippedIncremental.Count(j => j <= -1 && j >= -3);
 
-
+                    if (skippedCountIncreasing == skippedLength || skippedCountDecreasing == skippedLength)
+                    {
+                        partBcount += 1;
+                        break;
+                    }
                 }
             }
         }
