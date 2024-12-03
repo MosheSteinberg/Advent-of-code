@@ -21,8 +21,7 @@ class Program
                 Day2.Run();
                 break;
             default:
-                Day2.Run();
-                Console.WriteLine("Unknown day");
+                Day3.Run();
                 break;
         }
     }
