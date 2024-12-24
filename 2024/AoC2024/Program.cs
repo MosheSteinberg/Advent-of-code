@@ -23,8 +23,14 @@ class Program
             case "day3":
                 Day3.Run();
                 break;
-            default:
+            case "day4":
                 Day4.Run();
+                break;
+            case "day5":
+                Day5.Run();
+                break;  
+            default:
+                Day6.Run();
                 break;
         }
     }
