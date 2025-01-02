@@ -3,13 +3,6 @@ using System.IO.Compression;
 
 public static class Day6
 {
-    enum Direction
-        {
-            Up,
-            Right,
-            Down,
-            Left
-        };
     public static void Run()
     {
 
@@ -19,7 +12,7 @@ public static class Day6
         int height = charArrays.Length;
         int width = charArrays[0].Length;
 
-        List<(int,int)> locations = [];
+        List<Step> locations = [];
 
         //charArrays.SelectMany(ch => (ch, ch.In))
         // Find the starting position of the given character
@@ -36,9 +29,10 @@ public static class Day6
             return;
         }
 
-        locations.Add((position.rowIndex, position.colIndex));
-
         Direction dir = Direction.Up;
+
+        locations.Add(new Step(position.rowIndex, position.colIndex, dir));
+
         bool onmap = true;
         while (onmap)
         {
@@ -49,10 +43,10 @@ public static class Day6
                     .Select((row, rowIndex) => new { value = row[position.colIndex], rowIndex })
                     .Skip(position.rowIndex + 1)
                     .TakeWhile(x => x.value != '#')
-                    .Select(x => (x.rowIndex, position.colIndex)));
+                    .Select(x => new Step(x.rowIndex, position.colIndex, dir)));
 
                 
-                position = new {position.ch, rowIndex = locations.Last().Item1, position.colIndex}; 
+                position = new {position.ch, locations.Last().rowIndex, position.colIndex}; 
             }
             else if (dir == Direction.Up)
             {
@@ -61,9 +55,9 @@ public static class Day6
                 .Reverse()
                 .Skip(height - position.rowIndex)
                 .TakeWhile(x => x.value != '#')
-                .Select(x => (x.rowIndex, position.colIndex)));
+                .Select(x => new Step(x.rowIndex, position.colIndex, dir)));
 
-                position = new {position.ch, rowIndex = locations.Last().Item1, position.colIndex}; 
+                position = new {position.ch, locations.Last().rowIndex, position.colIndex}; 
             }
             else if (dir == Direction.Right)
             {
@@ -71,9 +65,9 @@ public static class Day6
                                     .Select((col, colIndex) => new {col, colIndex})
                                     .Skip(position.colIndex + 1)
                                     .TakeWhile(c => c.col != '#')
-                                    .Select(val => (position.rowIndex, val.colIndex)));
+                                    .Select(val => new Step(position.rowIndex, val.colIndex, dir)));
 
-                position = new {position.ch, position.rowIndex, colIndex = locations.Last().Item2}; 
+                position = new {position.ch, position.rowIndex, locations.Last().colIndex}; 
             }
             else // left
             {
@@ -82,9 +76,9 @@ public static class Day6
                                     .Reverse()
                                     .Skip(width - position.colIndex)
                                     .TakeWhile(c => c.col != '#')
-                                    .Select(val => (position.rowIndex, val.colIndex)));
+                                    .Select(val => new Step(position.rowIndex, val.colIndex, dir)));
                 
-                position = new {position.ch, position.rowIndex, colIndex = locations.Last().Item2}; 
+                position = new {position.ch, position.rowIndex, locations.Last().colIndex}; 
             }
 
             int index = (int)dir;
@@ -103,10 +97,39 @@ public static class Day6
             // If no, count number of places to edge and break
         }
         
-        int countPartA = locations.Distinct().Count();
+        int countPartA = locations.Distinct(new TupleComparer()).Count();
+
 
         Console.WriteLine($"Part A: {countPartA}");
         // Console.WriteLine($"Part B: {countPartB}");
         
+    }
+
+}
+
+public enum Direction
+        {
+            Up,
+            Right,
+            Down,
+            Left
+        };
+
+public class Step(int rowIndex, int colIndex, Direction dir)
+{
+    public int rowIndex = rowIndex;
+    public int colIndex = colIndex;
+    public Direction dir = dir;
+}
+public class TupleComparer : IEqualityComparer<Step>
+{
+    public bool Equals(Step x, Step y)
+    {
+        return x.rowIndex == y.rowIndex && x.colIndex == y.colIndex;
+    }
+
+    public int GetHashCode(Step obj)
+    {
+        return HashCode.Combine(obj.rowIndex, obj.colIndex);
     }
 }
