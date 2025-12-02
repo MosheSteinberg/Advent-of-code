@@ -1,4 +1,4 @@
-var lines = File.ReadAllLines("Input/2sample.txt");
+var lines = File.ReadAllLines("Input/2.txt");
 var contents = string.Join("", lines);
 var allIds = contents
     .Split(',')
