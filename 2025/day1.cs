@@ -6,43 +6,19 @@ var processedList = lines
     .Select(x => new PositionLevel(Mod(x, 100), Div(x, 100)) );
 var answer = processedList
     .Count(x => x.Position == 0);
+
 Console.WriteLine($"Number of times at position 0: {answer}");
 
-
-var bla = processedList
+var answer2 = processedList
     .Zip(processedList.Skip(1))
-    .Select(pair => Math.Abs(pair.Second.Level - pair.First.Level) - (pair.First.Position == 0 & pair.First.Level > pair.Second.Level ? 1 : 0) + (pair.Second.Position == 0 & pair.First.Level >= pair.Second.Level ? 1 : 0));
-    //.Sum();
+    .Select(pair => 
+                Math.Abs(pair.Second.Level - pair.First.Level) // Levels moved
+                - (pair.First.Position == 0 & pair.First.Level > pair.Second.Level ? 1 : 0) // Not crossed zero if it started on zero and moved down
+                + (pair.Second.Position == 0 & pair.First.Level >= pair.Second.Level ? 1 : 0) // Has crossed zero if it ended on zero even though it hasn't moved down a level
+            )
+    .Sum();
 
-var foo = lines
-    .Select(line => (line.Substring(0, 1) == "R" ? 1 : -1) * int.Parse(line.Substring(1)))
-    .Prepend(50)
-    .Accumulate();
-
-var z = foo
-    .Zip(foo.Skip(1))
-    .Select(pair =>
-    {
-        var range = Enumerable.Range(Math.Min(pair.First, pair.Second), Math.Abs(pair.Second - pair.First)+1)
-            .ToList();
-        range.Remove(pair.First); // remove starting point to avoid double counting
-        return range
-            .Select(x => Mod(x, 100))
-            .Count(x => x == 0);
-    }
-    );
-
-// foreach ( var item in z )
-// {
-//     Console.WriteLine($"Range: {string.Join(", ", item)}");
-// }
-// for(var i = 0; i < processedList.Count(); i++) 
-// {
-//     Console.WriteLine($"Position: {processedList.ElementAt(i).Position}, Level: {processedList.ElementAt(i).Level}");
-//     Console.WriteLine($"Moves: {bla.ElementAtOrDefault(i)}");
-// }
-
-Console.WriteLine($"Total number of divisions crossed: {bla.Sum()}");
+Console.WriteLine($"Total number of divisions crossed: {answer2}");
 
 
 static int Mod(int a, int b)
