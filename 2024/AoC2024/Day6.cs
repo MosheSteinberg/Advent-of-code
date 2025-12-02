@@ -123,9 +123,9 @@ public class Step(int rowIndex, int colIndex, Direction dir)
 }
 public class TupleComparer : IEqualityComparer<Step>
 {
-    public bool Equals(Step x, Step y)
+    public bool Equals(Step? x, Step? y)
     {
-        return x.rowIndex == y.rowIndex && x.colIndex == y.colIndex;
+        return x?.rowIndex == y?.rowIndex && x?.colIndex == y?.colIndex;
     }
 
     public int GetHashCode(Step obj)
