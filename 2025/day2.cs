@@ -1,11 +1,11 @@
-var lines = File.ReadAllLines("Input/2sample.txt");
+var lines = File.ReadAllLines("Input/2.txt");
 var contents = string.Join("", lines);
 var answer1 = contents
     .Split(',')
     .Select(s => 
         {
             var parts = s.Split('-');
-            return Enumerable.Range(int.Parse(parts[0]), int.Parse(parts[1]) - int.Parse(parts[0]) + 1);
+            return CreateRange(long.Parse(parts[0]), long.Parse(parts[1]));
         })
     .SelectMany(x => x)
     .Where(x =>
@@ -26,3 +26,12 @@ var answer1 = contents
     .Sum();
 
 Console.WriteLine($"Answer 2a: {answer1}");
+
+static IEnumerable<long> CreateRange(long start, long end)
+{
+    while (start <= end)
+    {
+        yield return start;
+        start++;
+    }
+}
