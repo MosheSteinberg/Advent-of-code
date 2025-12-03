@@ -1,8 +1,8 @@
-var input = File.ReadLines("Input/3sample.txt");
-// max up to last number
+var input = File.ReadLines("Input/3.txt");
 
-var answer1 = input
-    .Select(line => line.ToCharArray().Select(c => int.Parse(c.ToString())))
+var prep = input
+    .Select(line => line.ToCharArray().Select(c => int.Parse(c.ToString())));
+var answer1 = prep
     .Select(row => 
     {
         var max = row.Take(row.Count() - 1).Max();
