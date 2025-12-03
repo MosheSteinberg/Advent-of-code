@@ -1,4 +1,4 @@
-var input = File.ReadLines("Input/3sample.txt");
+var input = File.ReadLines("Input/3.txt");
 
 var prep = input
     .Select(line => line.ToCharArray().Select(c => int.Parse(c.ToString())));
